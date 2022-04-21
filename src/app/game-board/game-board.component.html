@@ -1,0 +1,12 @@
+<div style="position:relative" [style.width]="'300px'" [style.height]="'300px'" #playerBoard>
+  <ng-container *ngFor="let ship of boardConfig['selections']">
+    <div style="position:absolute" [style.top]="ship.top+'px'" [style.left]="ship.left+'px'">
+      <app-ship [name]="ship.name" [size]="ship.size" [type]="ship.type"></app-ship>
+    </div>
+  </ng-container>
+  <div class="table-row" *ngFor="let row of boardConfig['board'];let i=index">
+    <div class="cell" *ngFor="let box of row;let j=index" id='columns'>
+      <button #bt class="bt-cell" (click)="handleClick($event, bt.getBoundingClientRect());" (mouseover)="position=bt.getBoundingClientRect()"></button>
+    </div>
+  </div>
+</div>

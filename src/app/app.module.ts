@@ -3,14 +3,20 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
 import {FillPipe} from "./fill.pipe";
+import {DragDropModule} from "@angular/cdk/drag-drop";
+import { ShipComponent } from './ship/ship.component';
+import { GameBoardComponent } from './game-board/game-board.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    FillPipe
+    FillPipe,
+    ShipComponent,
+    GameBoardComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

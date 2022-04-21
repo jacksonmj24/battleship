@@ -1,26 +1,69 @@
 <div class="container">
-  <div class="row">
-    <div class="col-6">
-      <div class="row shipyard">
-        <ng-container *ngFor="let shp of shipsConfig">
-          <div class="m-2" [ngClass]="shp.type === 'v' ? 'grid-1x' + shp.c : 'grid-'+ shp.c+ 'x1'">
-            <ng-container *ngFor="let blk of shp.c | fill; let i = index">
-              <div class="grid-item">*</div>
-            </ng-container>
+  <div class="row mt-4" *ngIf="!gamePlay">
+    <div class="col-12">
+      <h2 *ngIf="!activePlayer">Player 1</h2>
+      <h2 *ngIf="activePlayer">Player 2</h2>
+      <hr>
+    </div>
+    <div class='col-6 mt-3'>
+      <div class="ships">
+        <h5 class="color-gray">Drag the ships to the grid, and then click to rotate:</h5>
+        <div cdkDropList #cdkShips=cdkDropList [cdkDropListData]="ships" class="ship-list"
+             [cdkDropListConnectedTo]="[cdkBoard]" (cdkDropListDropped)="drop($event)"
+             cdkDropListSortingDisabled="true">
+          <div *ngFor="let ship of ships" class="m-2">
+            <div cdkDrag [style.size]="50*ship.size+'px'">
+              <app-ship [name]="ship.name" [size]="ship.size"></app-ship>
+              <div *cdkDragPlaceholder></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<hr />-->
+    <div class="col-6 table-container">
+      <div cdkDropList #cdkBoard=cdkDropList [cdkDropListData]="shipsInBoard" [cdkDropListConnectedTo]="[cdkShips]"
+           style="position:relative" (cdkDropListDropped)="drop($event)" cdkDropListSortingDisabled="true"
+           [style.width]="'300px'" [style.height]="'300px'">
+        <ng-container *ngFor="let ship of shipsInBoard">
+          <div style="position:absolute" [style.top]="ship.top+'px'" [style.left]="ship.left+'px'" cdkDrag>
+            <app-ship [name]="ship.name" [size]="ship.size"></app-ship>
+            <div *cdkDragPlaceholder></div>
           </div>
         </ng-container>
+        <div class="table-row" *ngFor="let row of board;let i=index">
+          <div class="cell" *ngFor="let box of row;let j=index" id='columns'>
+            <button #bt class="bt-cell" (mouseover)="position=bt.getBoundingClientRect()"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 d-flex">
+      <button class="btn btn-primary m-2" (click)="saveGrid()">Start Game</button>
+      <button class="btn btn-secondary m-2" (click)="reset()">Reset Grid</button>
+    </div>
+  </div>
+
+  <div class="row mt-4" *ngIf="gamePlay">
+    <div class="col-6">
+      <div class="row">
+        <div class="col-12">
+          <h2>Player 1</h2>
+        </div>
+        <div class="col-12 mt-3">
+          <app-game-board [config]="firstPlayerGrid"></app-game-board>
+        </div>
       </div>
     </div>
     <div class="col-6">
       <div class="row">
-        <div class="grid-container">
-          <ng-container *ngFor="let row of m | fill; let i = index">
-            <ng-container *ngFor="let column of n | fill; let i = index">
-              <div class="grid-item">{{i + 1}}</div>
-            </ng-container>
-          </ng-container>
+        <div class="col-12">
+          <h2>Player 2</h2>
+        </div>
+        <div class="col-12 mt-3">
+          <app-game-board [config]="secondPlayerGrid"></app-game-board>
         </div>
       </div>
     </div>
+
   </div>
-</div>
