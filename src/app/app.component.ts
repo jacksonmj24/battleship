@@ -86,6 +86,15 @@ export class AppComponent implements OnInit {
     console.log("Board", this.board);
     console.log("Grid...", this.shipsInBoard);
     let valid = true;
+    console.log('previous', event.previousContainer.data[event.previousIndex]);
+    console.log('current', event.container.data[event.currentIndex]);
+    // Check if the ship is placed at the end cells.
+    if (x >= 270) {
+      if (event.previousContainer.data[event.previousIndex].size > 1) {
+        valid = false;
+        console.log('Placed at end');
+      }
+    }
     if (this.shipsInBoard.length > 1) {
       this.shipsInBoard.forEach((item: any) => {
           //  To check if exactly on top
@@ -168,11 +177,6 @@ export class AppComponent implements OnInit {
     this.board = JSON.parse(JSON.stringify(this.defaultBoardElements));
     this.ships = JSON.parse(JSON.stringify(this.defaultShips));
     this.shipsInBoard = [];
-    // {"name": "", "size": 1, "top": 0, "left": 0},
-    // {"name": "", "size": 1, "top": 0, "left": 60},
-    // {"name": "", "size": 2, "top": 0, "left": 120},
-    // {"name": "", "size": 3, "top": 0, "left": 210},
-    // {"name": "", "size": 4, "top": 60.00000762939453, "left": 0}
   }
 
   cancelGame() {
@@ -183,10 +187,7 @@ export class AppComponent implements OnInit {
     this.reset();
   }
 
-  handleEvent(event
-                :
-                any
-  ) {
+  handleEvent(event: any) {
     if (event && event.status === 'completed') {
       this.activePlayer = event.payload.player === 0 ? 1 : 0;
     }

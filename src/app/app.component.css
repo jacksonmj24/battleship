@@ -50,7 +50,7 @@
 }
 
 .placement-grid {
-  position:relative;
+  position: relative;
   width: 300px;
   height: 300px;
 }
@@ -66,5 +66,20 @@
   z-index: 999;
 }
 
+.player-area {
+  background: #f6f6f6;
+  justify-content: center;
+  display: flex;
+}
+
+.active {
+  border: 1px solid #46efd7;
+  border-radius: 5px;
+  background: #f9fcff;
+}
+
+.active-player {
+  color: #46efd7
+}
 
 

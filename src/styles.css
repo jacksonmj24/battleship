@@ -25,3 +25,22 @@
   background-color: #00c6aa;
   border-color: #46efd7;
 }
+
+.btn-primary:active {
+  color: #fff;
+  background-color: #33beaa;
+  border-color: #46efd7;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #299e8d;
+  border-color: #46efd7;
+}
+
+.btn-primary:focus {
+  color: #fff;
+  background-color: #299e8d;
+  border-color: #46efd7;
+  box-shadow: 0 0 0 0.25rem rgba(0, 208, 174, 0.5);
+}

@@ -54,10 +54,11 @@
     <div class="col-6">
       <div class="row">
         <div class="col-12">
-          <h4>Player 1</h4>
+          <h4 [ngClass]="{'active-player': activePlayer === 0}">Player 1</h4>
           <hr>
         </div>
-        <div class="col-12 mt-3" [ngClass]="{'click-none': activePlayer === 1}">
+        <div class="col-12 mt-3 player-area"
+             [ngClass]="{'click-none': activePlayer === 1, 'active': activePlayer === 0}">
           <app-game-board [config]="firstPlayerGrid" (evt)="handleEvent($event)"></app-game-board>
         </div>
       </div>
@@ -65,10 +66,11 @@
     <div class="col-6">
       <div class="row">
         <div class="col-12">
-          <h4>Player 2</h4>
+          <h4 [ngClass]="{'active-player': activePlayer === 1}">Player 2</h4>
           <hr>
         </div>
-        <div class="col-12 mt-3" [ngClass]="{'click-none': activePlayer === 0}">
+        <div class="col-12 mt-3 player-area"
+             [ngClass]="{'click-none': activePlayer === 0, 'active': activePlayer === 1}">
           <app-game-board [config]="secondPlayerGrid" (evt)="handleEvent($event)"></app-game-board>
         </div>
       </div>
