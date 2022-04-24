@@ -28,7 +28,7 @@
       <div cdkDropList #cdkBoard=cdkDropList [cdkDropListData]="shipsInBoard" [cdkDropListConnectedTo]="[cdkShips]"
            class="placement-grid" (cdkDropListDropped)="drop($event)" cdkDropListSortingDisabled>
         <ng-container *ngFor="let ship of shipsInBoard">
-          <div style="position:absolute" [style.top]="ship.top+'px'" [style.left]="ship.left+'px'" cdkDrag
+          <div class="position-absolute" [style.top]="ship.top+'px'" [style.left]="ship.left+'px'" cdkDrag
                cdkDragBoundary=".placement-grid">
             <app-ship [name]="ship.name" [size]="ship.size"></app-ship>
             <div class="drag-handle" cdkDragHandle>

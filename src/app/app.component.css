@@ -1,6 +1,7 @@
 .table-container {
   display: inline;
   justify-content: space-between;
+  position: relative;
 }
 
 .ship-box {
@@ -10,14 +11,6 @@
 .ship-drop-wrapper {
   position: absolute;
   top: 0;
-}
-
-.ship-box-cell {
-  width: 30px;
-  height: 30px;
-  border: 1px solid #46efd7;
-  display: inline-block;
-  background-color: #46efd7;
 }
 
 .ship-list, #board {
