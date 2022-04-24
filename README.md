@@ -1,5 +1,9 @@
 # Battleship
 
+Trying to replicate the battleship game using angular
+
+Model: http://en.battleship-game.org/
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.3.
 
 ## Development server
