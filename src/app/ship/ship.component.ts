@@ -13,49 +13,7 @@ import {Component, Input} from '@angular/core';
       </div>
     </div>
   `,
-  styles: [`
-    .ship-box {
-      position: relative;
-      height: 30px;
-      z-index: 100
-    }
-
-    .ship-drop-wrapper {
-      position: absolute;
-      top: 0;
-    }
-
-    .ship-box-cell {
-      width: 30px;
-      height: 30px;
-      display: inline-block;
-    }
-
-    .cell-bg {
-      border: 1px solid #46efd7;
-      background-color: #46efd7;
-    }
-
-    .t-hit {
-      border: 1px solid #ec0328;
-      background-color: #f90858;
-    }
-
-    .t-miss {
-      border: 1px solid #6d6d6d;
-      background-color: #6d6d6d;
-    }
-
-    .ship-box-cell:first-child {
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-    }
-
-    .ship-box-cell:last-child {
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
-    }
-  `]
+  styleUrls: ['./ship.component.css']
 })
 export class ShipComponent {
   @Input() name: string = '';

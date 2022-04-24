@@ -10,11 +10,14 @@
         <h5 class="color-gray">Drag the ships to the grid, and then click to rotate:</h5>
         <div cdkDropList #cdkShips=cdkDropList [cdkDropListData]="ships" class="ship-list"
              [cdkDropListConnectedTo]="[cdkBoard]" (cdkDropListDropped)="drop($event)"
-             cdkDropListSortingDisabled="true">
-          <div *ngFor="let ship of ships" class="m-2">
+             cdkDropListSortingDisabled>
+          <div *ngFor="let ship of ships" class="m-2 ships-list">
             <div cdkDrag [style.size]="50*ship.size+'px'">
               <app-ship [name]="ship.name" [size]="ship.size"></app-ship>
-              <div *cdkDragPlaceholder></div>
+              <div class="drag-handle" cdkDragHandle>
+                <img src="../assets/ship-svgrepo-com.svg" alt="" *ngIf="ship.size > 1">
+                <img src="../assets/boat-svgrepo-com.svg" alt="" *ngIf="ship.size === 1">
+              </div>
             </div>
           </div>
         </div>
@@ -23,12 +26,15 @@
     <!--<hr />-->
     <div class="col-6 table-container">
       <div cdkDropList #cdkBoard=cdkDropList [cdkDropListData]="shipsInBoard" [cdkDropListConnectedTo]="[cdkShips]"
-           style="position:relative" (cdkDropListDropped)="drop($event)" cdkDropListSortingDisabled="true"
-           [style.width]="'300px'" [style.height]="'300px'">
+           class="placement-grid" (cdkDropListDropped)="drop($event)" cdkDropListSortingDisabled>
         <ng-container *ngFor="let ship of shipsInBoard">
-          <div style="position:absolute" [style.top]="ship.top+'px'" [style.left]="ship.left+'px'" cdkDrag>
+          <div style="position:absolute" [style.top]="ship.top+'px'" [style.left]="ship.left+'px'" cdkDrag
+               cdkDragBoundary=".placement-grid">
             <app-ship [name]="ship.name" [size]="ship.size"></app-ship>
-            <div *cdkDragPlaceholder></div>
+            <div class="drag-handle" cdkDragHandle>
+              <img src="../assets/ship-svgrepo-com.svg" alt="" *ngIf="ship.size > 1">
+              <img src="../assets/boat-svgrepo-com.svg" alt="" *ngIf="ship.size === 1">
+            </div>
           </div>
         </ng-container>
         <div class="table-row" *ngFor="let row of board;let i=index">
@@ -48,22 +54,26 @@
     <div class="col-6">
       <div class="row">
         <div class="col-12">
-          <h2>Player 1</h2>
+          <h4>Player 1</h4>
+          <hr>
         </div>
-        <div class="col-12 mt-3">
-          <app-game-board [config]="firstPlayerGrid"></app-game-board>
+        <div class="col-12 mt-3" [ngClass]="{'click-none': activePlayer === 1}">
+          <app-game-board [config]="firstPlayerGrid" (evt)="handleEvent($event)"></app-game-board>
         </div>
       </div>
     </div>
     <div class="col-6">
       <div class="row">
         <div class="col-12">
-          <h2>Player 2</h2>
+          <h4>Player 2</h4>
+          <hr>
         </div>
-        <div class="col-12 mt-3">
-          <app-game-board [config]="secondPlayerGrid"></app-game-board>
+        <div class="col-12 mt-3" [ngClass]="{'click-none': activePlayer === 0}">
+          <app-game-board [config]="secondPlayerGrid" (evt)="handleEvent($event)"></app-game-board>
         </div>
       </div>
     </div>
-
+    <div class="col-12 d-flex">
+      <button class="btn btn-secondary m-2" (click)="cancelGame()">Cancel Game</button>
+    </div>
   </div>

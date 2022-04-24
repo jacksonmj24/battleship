@@ -48,5 +48,30 @@
   color: gray;
 }
 
+.click-none {
+  pointer-events: none;
+}
+
+.ships-list {
+  position: relative;
+}
+
+.placement-grid {
+  position:relative;
+  width: 300px;
+  height: 300px;
+}
+
+.drag-handle {
+  position: absolute;
+  top: 0;
+  left: 4px;
+  color: #2a0101;
+  cursor: move;
+  width: 16px;
+  height: 16px;
+  z-index: 999;
+}
+
 
 
