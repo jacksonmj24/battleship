@@ -43,6 +43,7 @@ export class AppComponent implements OnInit {
   position: any
   activePlayer: number = 0;
   gamePlay: boolean = false;
+  occupiedCells: any = [];
 
   constructor() {
   }
@@ -53,95 +54,31 @@ export class AppComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<any[]>) {
-    if (this.checkValidDrop(event)) {
-      event.previousContainer.data[event.previousIndex].top = this.position ? this.position.y - this.boardElement.nativeElement.getBoundingClientRect().y : 0
-      event.previousContainer.data[event.previousIndex].left = this.position ? this.position.x - this.boardElement.nativeElement.getBoundingClientRect().x : 0
-      if (event.previousContainer === event.container) {
-        moveItemInArray(
-          event.container.data,
-          event.previousIndex,
-          event.currentIndex
-        );
-      } else {
+    let top = this.position ? this.position.y - this.boardElement.nativeElement.getBoundingClientRect().y : 0;
+    let left = this.position ? this.position.x - this.boardElement.nativeElement.getBoundingClientRect().x : 0;
+    if (this.occupiedCells.filter((x: any) => x.top === top && x.left === left).length === 0) {
+      event.previousContainer.data[event.previousIndex].top = top;
+      event.previousContainer.data[event.previousIndex].left = left;
+      if (event.previousContainer !== event.container) {
         transferArrayItem(
           event.previousContainer.data,
           event.container.data,
           event.previousIndex,
           event.currentIndex
         );
+      } else {
+        // moveItemInArray(
+        //   event.container.data,
+        //   event.previousIndex,
+        //   event.currentIndex
+        // );
       }
+      this.occupiedCells = this.occupiedCells.concat({top, left});
     } else {
-      console.log('reset', event.previousContainer.data[event.previousIndex]);
-      console.log('reset', event.previousContainer.data[event.previousIndex]);
+      console.log("reset");
     }
   }
 
-  checkValidDrop(event: CdkDragDrop<any[]>): boolean {
-    //  The ship should not be placed on top of other ships
-    //  The ships should not be placed to the nearest cells around the ship.
-    let y = this.position ? this.position.y - this.boardElement.nativeElement.getBoundingClientRect().y : 0;
-    let x = this.position ? this.position.x - this.boardElement.nativeElement.getBoundingClientRect().x : 0;
-    console.log("y:" + y, "x:" + x);
-
-    console.log("Board", this.board);
-    console.log("Grid...", this.shipsInBoard);
-    let valid = true;
-    console.log('previous', event.previousContainer.data[event.previousIndex]);
-    console.log('current', event.container.data[event.currentIndex]);
-    // Check if the ship is placed at the end cells.
-    if (x >= 270) {
-      if (event.previousContainer.data[event.previousIndex].size > 1) {
-        valid = false;
-        console.log('Placed at end');
-      }
-    }
-    if (this.shipsInBoard.length > 1) {
-      this.shipsInBoard.forEach((item: any) => {
-          //  To check if exactly on top
-          if (item.top === y && item.left === x) {
-            valid = false;
-          } else {
-            // To check if placed on near cells
-            let neighbourCells: any = [];
-            if (item.left - 30 >= 0) {
-              neighbourCells = [
-                {top: item.top - 30, left: item.left - 30},
-                {top: item.top, left: item.left - 30},
-                {top: item.top + 30, left: item.left - 30},
-              ];
-              console.log("Water cells", neighbourCells);
-              if (this.checkWithinRange(neighbourCells, item, item.size + 1, x, y)) {
-                valid = false;
-              }
-            } else {
-              neighbourCells = [
-                {top: item.top - 30, left: item.left},
-                {top: item.top, left: item.left},
-                {top: item.top + 30, left: item.left},
-              ];
-              console.log("Water cells", neighbourCells);
-              if (this.checkWithinRange(neighbourCells, item, item.size, x, y)) {
-                valid = false;
-              }
-            }
-          }
-        }
-      );
-    }
-    console.log("Valid:", valid);
-    return valid;
-  }
-
-  private checkWithinRange(start: any, ship: any, size: any, x: number, y: number) {
-    let bool = false;
-    start.forEach((pos: any) => {
-      if (x === pos.top && y >= pos.left && y <= pos.left + (size * 30)) {
-        bool = true;
-        console.log('Overlap', ship, pos)
-      }
-    });
-    return bool;
-  }
 
   saveGrid() {
     if (!this.ships.length) {
