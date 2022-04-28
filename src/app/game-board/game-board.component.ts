@@ -32,7 +32,6 @@ export class GameBoardComponent implements OnInit {
       flag = 'hit';
     }
     this.mark(top, left, flag);
-    console.log(match);
     this.evt.emit({status: 'completed', payload: this.boardConfig})
   }
 

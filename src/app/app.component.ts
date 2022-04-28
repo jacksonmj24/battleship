@@ -1,10 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-
-export interface IBox {
-  selected?: boolean;
-  ships?: number;
-}
+import {CdkDragDrop, transferArrayItem} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-root',
@@ -12,7 +7,7 @@ export interface IBox {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  public board: Array<Array<IBox>> = [];
+  public board: Array<Array<any>> = [];
   public ships: any = [];
   private defaultBoardElements: any = [
     [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
@@ -63,9 +58,10 @@ export class AppComponent implements OnInit {
     let left = this.position ? this.position.x - this.boardElement.nativeElement.getBoundingClientRect().x : 0;
     let currentIndex = this.shipsInBoard.findIndex((shp: any) => shp.id === this.activeDragShip.id);
     let cellsAfterPositioned = this.getActualShipPositions(top, left);
+    // To check if the ships is placed within the grid boundary
     if (this.checkWithinBoundary(cellsAfterPositioned)) {
       if (currentIndex >= 0) {
-        //  TO-DO: Check if valid placement, if the ship is moved within the grid after initial placement
+        // To check if the ship is moved within the grid
         if (!this.checkIfCollide(top, left)) {
           let cells2 = JSON.parse(JSON.stringify(this.shipsInBoard));
           cells2[currentIndex].top = top;
@@ -75,13 +71,11 @@ export class AppComponent implements OnInit {
           this.occupiedCells = this.occupiedCells.concat(this.getAllCellPositions(top, left));
           this.actualShipCells = this.releaseOccupiedCells(this.actualShipCells);
           this.actualShipCells = this.actualShipCells.concat(cellsAfterPositioned);
-          console.log('actual', this.actualShipCells);
         } else {
           console.log("reset");
         }
       } else {
-        // TO-DO: Check if the new ship is placed on top of occupied cells.
-        console.log(this.occupiedCells.filter((x: any) => x.top === top && x.left === left));
+        // TO-DO: Check if the new ship is placed on top/water other ships.
         if (this.occupiedCells.filter((x: any) => x.top === top && x.left === left).length === 0) {
           event.previousContainer.data[event.previousIndex].top = top;
           event.previousContainer.data[event.previousIndex].left = left;
@@ -195,7 +189,6 @@ export class AppComponent implements OnInit {
   handleEvent(event: any) {
     if (event && event.status === 'completed') {
       if (event.payload['selections'].filter((x: any) => x.type === 'hit').length === event.payload['shipsInBoard'].length) {
-        console.log(this.activePlayer + " won!!!");
         this.showResult = true;
       } else {
         this.activePlayer = event.payload.player === 0 ? 0 : 1;
@@ -204,7 +197,6 @@ export class AppComponent implements OnInit {
   }
 
   setActiveShip(ship: any) {
-    console.log(ship);
     this.activeDragShip = ship;
   }
 
