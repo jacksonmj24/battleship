@@ -12,7 +12,7 @@
              [cdkDropListConnectedTo]="[cdkBoard]" (cdkDropListDropped)="drop($event)"
              cdkDropListSortingDisabled>
           <div *ngFor="let ship of ships" class="m-2 ships-list">
-            <div cdkDrag [ngStyle]="{'size': 30*ship.size+'px'}">
+            <div cdkDrag [ngStyle]="{'size': 30*ship.size+'px'}" (cdkDragStarted)="setActiveShip(ship)" cdkDragBoundary=".placement-grid">
               <app-ship [name]="ship.name" [size]="ship.size"></app-ship>
               <div class="drag-handle" cdkDragHandle>
                 <img src="../assets/ship-svgrepo-com.svg" alt="" *ngIf="ship.size > 1">
@@ -28,13 +28,19 @@
       <div cdkDropList #cdkBoard=cdkDropList [cdkDropListData]="shipsInBoard" [cdkDropListConnectedTo]="[cdkShips]"
            class="placement-grid" (cdkDropListDropped)="drop($event)" cdkDropListSortingDisabled>
         <ng-container *ngFor="let ship of shipsInBoard">
-          <div class="position-absolute" [ngStyle]="{'top': ship.top+'px', 'left':ship.left+'px'}" cdkDrag
-               cdkDragBoundary=".placement-grid">
+          <div class="position-absolute" [ngStyle]="{'top': ship.top+'px', 'left':ship.left+'px'}" cdkDrag cdkdro
+               cdkDragBoundary=".placement-grid" (cdkDragStarted)="setActiveShip(ship)" *ngIf="showGrid">
             <app-ship [name]="ship.name" [size]="ship.size"></app-ship>
             <div class="drag-handle" cdkDragHandle>
               <img src="../assets/ship-svgrepo-com.svg" alt="" *ngIf="ship.size > 1">
               <img src="../assets/boat-svgrepo-com.svg" alt="" *ngIf="ship.size === 1">
             </div>
+          </div>
+        </ng-container>
+        <ng-container *ngFor="let ship of occupiedCells">
+          <div class="position-absolute" [ngStyle]="{'top': ship.top+'px', 'left':ship.left+'px', 'z-index': 9999}"
+               *ngIf="showGrid">
+            x
           </div>
         </ng-container>
         <div class="table-row" *ngFor="let row of board;let i=index">
