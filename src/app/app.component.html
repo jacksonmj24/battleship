@@ -39,7 +39,7 @@
           </div>
         </ng-container>
         <ng-container *ngFor="let ship of occupiedCells">
-          <div class="position-absolute" [ngStyle]="{'top': ship.top+'px', 'left':ship.left+'px', 'z-index': 9999}"
+          <div class="position-absolute" [ngStyle]="{'top': ship.top+'px', 'left':ship.left+'px', 'z-index': 9999, 'color': '#e2dede'}"
                *ngIf="showGrid">
             x
           </div>
