@@ -6,7 +6,7 @@
   </ng-container>
   <div class="table-row" *ngFor="let row of boardConfig['board'];let i=index">
     <div class="cell" *ngFor="let box of row;let j=index" id='columns'>
-      <button #bt class="bt-cell" (click)="handleClick($event, bt.getBoundingClientRect());" (mouseover)="position=bt.getBoundingClientRect()"></button>
+      <button #bt class="bt-cell" (click)="handleClick();" (mouseover)="position=bt.getBoundingClientRect()"></button>
     </div>
   </div>
 </div>

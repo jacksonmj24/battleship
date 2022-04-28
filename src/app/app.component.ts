@@ -46,6 +46,8 @@ export class AppComponent implements OnInit {
   occupiedCells: any = [];
   private activeDragShip: any = {};
   showGrid: boolean = false;
+  private actualShipCells: any = [];
+  showResult: boolean = false;
 
   constructor() {
   }
@@ -60,42 +62,44 @@ export class AppComponent implements OnInit {
     let top = this.position ? this.position.y - this.boardElement.nativeElement.getBoundingClientRect().y : 0;
     let left = this.position ? this.position.x - this.boardElement.nativeElement.getBoundingClientRect().x : 0;
     let currentIndex = this.shipsInBoard.findIndex((shp: any) => shp.id === this.activeDragShip.id);
-    if (currentIndex >= 0) {
-      //  TO-DO: Check if valid placement, if the ship is moved within the grid after initial placement
-      let possibleCells = this.getAllCellPositions(top, left);
-      if (!this.checkIfCollide(possibleCells, this.occupiedCells)) {
-        let cells2 = JSON.parse(JSON.stringify(this.shipsInBoard));
-        cells2[currentIndex].top = top;
-        cells2[currentIndex].left = left;
-        this.shipsInBoard = cells2;
-        this.occupiedCells = this.releaseOccupiedCells(this.occupiedCells);
-        this.occupiedCells = this.occupiedCells.concat(this.getAllCellPositions(top, left));
-      }
-    } else {
-      // TO-DO: Check if the new ship is placed on top of occupied cells.
-      let possibleCells = this.getAllCellPositions(top, left);
-      console.log("on top", this.shipsInBoard.filter((x: any) => x.top === top && x.left === left));
-      // console.log('intersect', filteredArray);
-
-      console.log(this.occupiedCells.filter((x: any) => x.top === top && x.left === left));
-      if (this.occupiedCells.filter((x: any) => x.top === top && x.left === left).length === 0) {
-        event.previousContainer.data[event.previousIndex].top = top;
-        event.previousContainer.data[event.previousIndex].left = left;
-        if (event.previousContainer !== event.container) {
-          transferArrayItem(
-            event.previousContainer.data,
-            event.container.data,
-            event.previousIndex,
-            event.currentIndex
-          );
+    let cellsAfterPositioned = this.getActualShipPositions(top, left);
+    if (this.checkWithinBoundary(cellsAfterPositioned)) {
+      if (currentIndex >= 0) {
+        //  TO-DO: Check if valid placement, if the ship is moved within the grid after initial placement
+        if (!this.checkIfCollide(top, left)) {
+          let cells2 = JSON.parse(JSON.stringify(this.shipsInBoard));
+          cells2[currentIndex].top = top;
+          cells2[currentIndex].left = left;
+          this.shipsInBoard = cells2;
+          this.occupiedCells = this.releaseOccupiedCells(this.occupiedCells);
+          this.occupiedCells = this.occupiedCells.concat(this.getAllCellPositions(top, left));
+          this.actualShipCells = this.releaseOccupiedCells(this.actualShipCells);
+          this.actualShipCells = this.actualShipCells.concat(cellsAfterPositioned);
+          console.log('actual', this.actualShipCells);
+        } else {
+          console.log("reset");
         }
-        this.occupiedCells = this.occupiedCells.concat(this.getAllCellPositions(top, left));
       } else {
-        console.log("reset");
+        // TO-DO: Check if the new ship is placed on top of occupied cells.
+        console.log(this.occupiedCells.filter((x: any) => x.top === top && x.left === left));
+        if (this.occupiedCells.filter((x: any) => x.top === top && x.left === left).length === 0) {
+          event.previousContainer.data[event.previousIndex].top = top;
+          event.previousContainer.data[event.previousIndex].left = left;
+          if (event.previousContainer !== event.container) {
+            transferArrayItem(
+              event.previousContainer.data,
+              event.container.data,
+              event.previousIndex,
+              event.currentIndex
+            );
+          }
+          this.occupiedCells = this.occupiedCells.concat(this.getAllCellPositions(top, left));
+          this.actualShipCells = this.actualShipCells.concat(cellsAfterPositioned);
+        } else {
+          console.log("reset");
+        }
       }
     }
-    console.log("Ships in board", this.shipsInBoard)
-    console.log("Cells occupied", this.occupiedCells)
     this.activeDragShip = {};
     this.showGrid = false;
     setTimeout(() => {
@@ -103,8 +107,23 @@ export class AppComponent implements OnInit {
     }, 300);
   }
 
-  checkIfCollide(arr: any[], arr2: any[]): boolean {
-    return false;
+  checkWithinBoundary(arr: any[]): boolean {
+    let a = arr.filter((cell: any) => cell.top < 0 || cell.top > 270 || cell.left < 0 || cell.left > 270);
+    return a.length > 0 ? false : true;
+  }
+
+  checkIfCollide(top: number, left: number): boolean {
+    // TO-DO: To check if the new ship position is not in the occupied cells and return false
+    let result = this.occupiedCells.filter((x: any) => x.left === left && x.top === left);
+    return result.length ? true : false;
+  }
+
+  getActualShipPositions(top: number, left: number) {
+    let cells: any = [];
+    for (let l = left; l < left + (this.activeDragShip.size * 30); l += 30) {
+      cells.push({id: this.activeDragShip.id, top, left: l});
+    }
+    return cells;
   }
 
   getAllCellPositions(top: number, left: number) {
@@ -133,7 +152,7 @@ export class AppComponent implements OnInit {
       if (this.activePlayer === 0) {
         this.firstPlayerGrid = {
           board: JSON.parse(JSON.stringify(this.board)),
-          shipsInBoard: JSON.parse(JSON.stringify(this.shipsInBoard)),
+          shipsInBoard: JSON.parse(JSON.stringify(this.actualShipCells)),
           ready: true,
           selections: [],
           player: 0
@@ -142,7 +161,7 @@ export class AppComponent implements OnInit {
       } else {
         this.secondPlayerGrid = {
           board: JSON.parse(JSON.stringify(this.board)),
-          shipsInBoard: JSON.parse(JSON.stringify(this.shipsInBoard)),
+          shipsInBoard: JSON.parse(JSON.stringify(this.actualShipCells)),
           ready: true,
           selections: [],
           player: 1
@@ -152,8 +171,6 @@ export class AppComponent implements OnInit {
       if (this.firstPlayerGrid.ready && this.secondPlayerGrid.ready) {
         this.gamePlay = true;
       }
-      console.log("data", this.firstPlayerGrid);
-      console.log("data", this.secondPlayerGrid);
       this.reset();
     }
   }
@@ -164,6 +181,7 @@ export class AppComponent implements OnInit {
     this.shipsInBoard = [];
     this.activeDragShip = {};
     this.occupiedCells = [];
+    this.actualShipCells = [];
   }
 
   cancelGame() {
@@ -176,7 +194,12 @@ export class AppComponent implements OnInit {
 
   handleEvent(event: any) {
     if (event && event.status === 'completed') {
-      this.activePlayer = event.payload.player === 0 ? 1 : 0;
+      if (event.payload['selections'].filter((x: any) => x.type === 'hit').length === event.payload['shipsInBoard'].length) {
+        console.log(this.activePlayer + " won!!!");
+        this.showResult = true;
+      } else {
+        this.activePlayer = event.payload.player === 0 ? 0 : 1;
+      }
     }
   }
 

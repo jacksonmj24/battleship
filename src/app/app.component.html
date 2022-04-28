@@ -12,7 +12,8 @@
              [cdkDropListConnectedTo]="[cdkBoard]" (cdkDropListDropped)="drop($event)"
              cdkDropListSortingDisabled>
           <div *ngFor="let ship of ships" class="m-2 ships-list">
-            <div cdkDrag [ngStyle]="{'size': 30*ship.size+'px'}" (cdkDragStarted)="setActiveShip(ship)" cdkDragBoundary=".placement-grid">
+            <div cdkDrag [ngStyle]="{'size': 30*ship.size+'px'}" (cdkDragStarted)="setActiveShip(ship)"
+                 cdkDragBoundary=".placement-grid">
               <app-ship [name]="ship.name" [size]="ship.size"></app-ship>
               <div class="drag-handle" cdkDragHandle>
                 <img src="../assets/ship-svgrepo-com.svg" alt="" *ngIf="ship.size > 1">
@@ -65,7 +66,7 @@
         </div>
         <div class="col-12 mt-3 player-area"
              [ngClass]="{'click-none': activePlayer === 1, 'active': activePlayer === 0}">
-          <app-game-board [config]="firstPlayerGrid" (evt)="handleEvent($event)"></app-game-board>
+          <app-game-board [config]="secondPlayerGrid" (evt)="handleEvent($event)"></app-game-board>
         </div>
       </div>
     </div>
@@ -77,11 +78,14 @@
         </div>
         <div class="col-12 mt-3 player-area"
              [ngClass]="{'click-none': activePlayer === 0, 'active': activePlayer === 1}">
-          <app-game-board [config]="secondPlayerGrid" (evt)="handleEvent($event)"></app-game-board>
+          <app-game-board [config]="firstPlayerGrid" (evt)="handleEvent($event)"></app-game-board>
         </div>
       </div>
     </div>
-    <div class="col-12 d-flex">
+    <div class="col-12" *ngIf="showResult">
+      <h3>Player {{this.activePlayer + 1}} Won !!!</h3>
+    </div>
+    <div class="col-12 d-flex" *ngIf="!showResult">
       <button class="btn btn-secondary m-2" (click)="cancelGame()">Cancel Game</button>
     </div>
   </div>

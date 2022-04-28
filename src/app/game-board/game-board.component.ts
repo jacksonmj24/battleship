@@ -23,28 +23,15 @@ export class GameBoardComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  handleClick(event: MouseEvent, boundingClientRect: DOMRect) {
-    console.log(event);
-    console.log(boundingClientRect);
-    console.log(this.boardConfig);
-    let clickX = this.position ? this.position.y - this.boardElement.nativeElement.getBoundingClientRect().y : 0;
-    let clickY = this.position ? this.position.x - this.boardElement.nativeElement.getBoundingClientRect().x : 0;
+  handleClick() {
+    let top = this.position ? this.position.y - this.boardElement.nativeElement.getBoundingClientRect().y : 0;
+    let left = this.position ? this.position.x - this.boardElement.nativeElement.getBoundingClientRect().x : 0;
     let flag: string = '';
-    let match = this.boardConfig.shipsInBoard.filter((x: any) => x.top === clickX && x.left === clickY);
-    if (!match.length) {
-      let secondaryMatch = this.boardConfig.shipsInBoard.filter((x: any) => x.top === clickX);
-      if (secondaryMatch.length) {
-        secondaryMatch.forEach((itm: any) => {
-          console.log(itm, clickX, clickY);
-          if (itm.size > 1 && clickY > itm.left && clickY <= (itm.left + (itm.size - 1) * 30)) {
-            flag = 'hit';
-          }
-        });
-      }
-    } else {
+    let match = this.boardConfig.shipsInBoard.filter((x: any) => (Math.round(x.top) === Math.round(top) && Math.round(x.left) === Math.round(left)));
+    if (match.length) {
       flag = 'hit';
     }
-    this.mark(clickX, clickY, flag);
+    this.mark(top, left, flag);
     console.log(match);
     this.evt.emit({status: 'completed', payload: this.boardConfig})
   }
